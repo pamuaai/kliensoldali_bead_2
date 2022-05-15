@@ -4,7 +4,7 @@ import { Alert, Container } from "react-bootstrap";
 import { useLoginMutation } from "../../state/authApiSlice";
 import { setCredentials } from "../../state/authSlice";
 
-const Login = ({ }) => {
+const Login = () => {
 
     const dispatch = useDispatch();
     const emailRef = useRef();
