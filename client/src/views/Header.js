@@ -1,5 +1,18 @@
+import { useDispatch } from "react-redux";
 import { Navbar, Container, Nav } from "react-bootstrap";
-export const Header = ({ setCurrentPage, loggedInUser, logout }) => {
+import { setCredentials } from "../state/authSlice";
+
+export const Header = ({ setCurrentPage, loggedInUser }) => {
+    const dispatch = useDispatch();
+
+    function logout() {
+
+        try {
+            dispatch(setCredentials({ user: null, token: null }));
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     return (
         <Navbar bg="light" expand="lg">
@@ -19,7 +32,7 @@ export const Header = ({ setCurrentPage, loggedInUser, logout }) => {
                 <Navbar.Collapse className="justify-content-end">
                     {loggedInUser ? (<>
                         <Navbar.Text>
-                            Üdv <strong>{loggedInUser.username}</strong>!
+                            Üdv <strong>{loggedInUser.fullname}</strong>!
                         </Navbar.Text>
                         <Nav.Link onClick={() => logout()}>Kijelentkezés</Nav.Link>
                     </>) : (<>

@@ -1,50 +1,58 @@
 import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Alert, Container } from "react-bootstrap";
+import { useLoginMutation } from "../../state/authApiSlice";
+import { setCredentials } from "../../state/authSlice";
 
-const Register = ({ register, setCurrentPage, userList }) => {
-    const userNameRef = useRef();
-    const passwordRef = useRef();
+const Login = ({ }) => {
+
+    const dispatch = useDispatch();
     const emailRef = useRef();
+    const passwordRef = useRef();
 
-    const [values, setValues] = useState({ username: '', password: '', email: '' });
+    const [loginFn] = useLoginMutation();
+
+    const [values, setValues] = useState({ password: '', email: '' });
     const [err, setErr] = useState(undefined);
     const handleChange = (event) =>
         setValues({ ...values, [event.target.name]: event.target.value });
 
-    const { username, password, email } = values;
+    const { password, email } = values;
 
-    const handleSubmit = (event) => {
+
+    async function handleSubmit(event) {
         event.preventDefault();
-        if (userList.some(u => u.username === username)) {
-            setErr("Hiba a bejelentkezés során");
-            return;
+
+        try {
+            const result = await loginFn({ strategy: 'local', email: email, password: password });
+            console.log("result", result);
+            if (result.data) {
+                dispatch(setCredentials(result.data));
+                console.log(result.data);
+            }
+
+            if (result.error) {
+                console.error(result.error.data?.errors[0]?.message || "Unexpected error");
+                setErr(result.error.data?.errors[0]?.message || "Unexpected error");
+                return;
+            }
+        } catch (err) {
+            console.log(err);
         }
-        register({ username, password, email });
     }
 
-    const canSubmit = password && username && email;
+    const canSubmit = password && email;
 
     useEffect(() => {
-        userNameRef.current.focus();
+        emailRef.current.focus();
     }, []);
 
     return (
         <Container className="p-3">
+            <h1>Bejelentkezés</h1>
             <form onSubmit={handleSubmit}>
                 {err && <Alert variant="danger">{err}</Alert>}
-                <label htmlFor="username">Felhasználónév: </label>
-                <input
-                    ref={userNameRef}
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={username}
-                    onChange={handleChange}
-                    label="Felhasználónév"
-                    required
-                />
-                <br />
-                <label htmlFor="password">E-mail: </label>
+                <label htmlFor="fullname">Email: </label>
                 <input
                     ref={emailRef}
                     type="email"
@@ -74,4 +82,4 @@ const Register = ({ register, setCurrentPage, userList }) => {
     );
 };
 
-export default Register;
+export default Login;

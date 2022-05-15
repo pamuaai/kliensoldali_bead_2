@@ -1,28 +1,27 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
-import { Header } from './components/Header';
-import Login from './components/auth/Login';
-import { defaultUsers } from './components/auth/auth.data';
-import Register from './components/auth/Register';
+import { Header } from './views/Header';
+import Login from './views/auth/Login';
+import Register from './views/auth/Register';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from './state/authSlice';
 
 function App() {
-  const [loggedInUser, setLoggedInUser] = useState(null);
   const [currentPage, setCurrentPage] = useState('a');
-  const [users, setUsers] = useState(defaultUsers);
-
-  const login = (user) => setLoggedInUser(user); // FUCKING HELL ERRE ADTAK EGY BACKENDET MIT BASZAKSZOM EZZEL
-  const logout = () => setLoggedInUser(null); // FUCKING HELL ERRE ADTAK EGY BACKENDET MIT BASZAKSZOM EZZEL
-  const register = (newUser) => setUsers([...users, newUser]); // FUCKING HELL ERRE ADTAK EGY BACKENDET MIT BASZAKSZOM EZZEL
+  const user = useSelector(selectCurrentUser);
 
   const renderPage = (pageName) => {
     switch (pageName) {
       case 'home':
         return <div>home</div>
       case 'login':
-        return <Login login={login} setCurrentPage={setCurrentPage} userList={users} />
+        if (!user) {
+          return <Login setCurrentPage={setCurrentPage} />
+        }
+        return <div>home</div>
       case 'register':
-        return <Register register={register} setCurrentPage={setCurrentPage} userList={users} />
+        return <Register setCurrentPage={setCurrentPage} />
       case 'a':
         return <div>a</div>
       case 'b':
@@ -34,7 +33,7 @@ function App() {
 
   return (
     <div className='App'>
-      <Header setCurrentPage={setCurrentPage} loggedInUser={loggedInUser} logout={logout} />
+      <Header setCurrentPage={setCurrentPage} loggedInUser={user} />
       {renderPage(currentPage)}
     </div>
   );
