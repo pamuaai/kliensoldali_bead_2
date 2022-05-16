@@ -1,9 +1,11 @@
 import { useDispatch } from "react-redux";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import { setCredentials } from "../state/authSlice";
+import { selectCurrentUser, setCredentials } from "../state/authSlice";
+import { useSelector } from 'react-redux';
 
-export const Header = ({ setCurrentPage, loggedInUser }) => {
+export const Header = ({ setCurrentPage }) => {
     const dispatch = useDispatch();
+    const user = useSelector(selectCurrentUser);
 
     function logout() {
 
@@ -22,17 +24,16 @@ export const Header = ({ setCurrentPage, loggedInUser }) => {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link onClick={() => setCurrentPage("taskBank")}>Feladatbank</Nav.Link>
-                        {loggedInUser && <>
+                        {user && <>
                             <Nav.Link onClick={() => setCurrentPage("myTaskLists")}>Feladatsoraim</Nav.Link>
-                            <Nav.Link onClick={() => setCurrentPage("a")}>a</Nav.Link>
                             <Nav.Link onClick={() => setCurrentPage("profile")}>Profil</Nav.Link>
                         </>}
                     </Nav>
                 </Navbar.Collapse>
                 <Navbar.Collapse className="justify-content-end">
-                    {loggedInUser ? (<>
+                    {user ? (<>
                         <Navbar.Text>
-                            Üdv <strong>{loggedInUser.fullname}</strong>!
+                            Üdv <strong>{user.fullname}</strong>!
                         </Navbar.Text>
                         <Nav.Link onClick={() => logout()}>Kijelentkezés</Nav.Link>
                     </>) : (<>

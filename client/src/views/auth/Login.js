@@ -28,7 +28,6 @@ const Login = () => {
             console.log("result", result);
             if (result.data) {
                 dispatch(setCredentials(result.data));
-                console.log(result.data);
             }
 
             if (result.error) {
