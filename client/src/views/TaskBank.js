@@ -2,12 +2,14 @@ import { useGetSomeTasksQuery } from "../state/tasksApiSlice";
 import { Button, Alert, Container, Accordion, Row } from "react-bootstrap";
 import { useState } from "react";
 // import { setTasks } from "../state/tasksSlice";
-import "./taskBank.css";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../state/authSlice";
+import { Task } from "./components/Task";
 
 export const TaskBank = () => {
     const [offset, setOffset] = useState(0);
     const limit = 10;
-
+    const user = useSelector(selectCurrentUser);
     const { data: currentTasks, isLoading } = useGetSomeTasksQuery(offset, limit);
     if (isLoading) {
         return "Betöltés alatt...";
@@ -22,16 +24,27 @@ export const TaskBank = () => {
     }
 
     return (
-        <Container>
-            <h1>Feladatbank</h1>
+        <Container className="pt-3">
+            <Row>
+                <div className="d-flex justify-content-between align-items-end pb-2">
+                    <h1 className="d-inline-block">Feladatbank</h1>
+                    <span>Oldal: {Math.ceil((offset + 1) / limit)}/{Math.ceil(currentTasks.total / limit)}</span>
+                </div>
+            </Row>
             <Accordion>
                 {currentTasks.data.map((task, id) => {
-                    return <Accordion.Item eventKey={id}>
+                    return <Accordion.Item eventKey={id} key={id}>
                         <Accordion.Header>
-                            {task.title}
+                            <div className="d-inline-block text-truncate w-100">
+                                <h2 className="d-inline me-3">{task.title}</h2>
+                                {task.description}
+                            </div>
                         </Accordion.Header>
                         <Accordion.Body>
-                            {task.description}
+                            <Task taskId={task.id} />
+                            {user &&
+                                <Button variant="success" onClick={() => { }}>Kiválaszt</Button>
+                            }
                         </Accordion.Body>
                     </Accordion.Item>
                 })}
@@ -46,10 +59,6 @@ export const TaskBank = () => {
                     </Button>
                 </div>
             </Row>
-            <br />
-            <Button variant="success" onClick={() => console.log('ÚJ')} disabled={!currentTasks}>
-                Új feladat
-            </Button>
         </Container >
     );
 }

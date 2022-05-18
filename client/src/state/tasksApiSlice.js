@@ -11,10 +11,10 @@ const tasksApiSlice = createApi({
         getAllTasks: build.query({
             query: () => ({ url: "tasks" }),
         }),
-        getonetask: build.query({
+        getOneTask: build.query({
             query: (taskId) => {
                 return {
-                    url: `authentication/${taskId}`,
+                    url: `tasks/${taskId}`,
                 }
             }
         }),
@@ -33,6 +33,6 @@ const tasksApiSlice = createApi({
     }),
 });
 
-export const { useGetAllTasksQuery, useGetonetaskQuery, useGetSomeTasksQuery } = tasksApiSlice;
+export const { useGetAllTasksQuery, useGetOneTaskQuery, useGetSomeTasksQuery } = tasksApiSlice;
 
 export default tasksApiSlice;

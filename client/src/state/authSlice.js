@@ -6,10 +6,11 @@ const slice = createSlice({
     reducers: {
         setCredentials: (
             state,
-            { payload: { user, token } }
+            { payload: { user, accessToken } }
         ) => {
-            state.user = user
-            state.token = token
+            console.log(user, accessToken);
+            state.user = user;
+            state.token = accessToken;
         },
     },
 })

@@ -4,8 +4,6 @@ import { useRegisterMutation } from "../../state/authApiSlice";
 
 const Register = ({ setCurrentPage }) => {
     const fullNameRef = useRef();
-    const passwordRef = useRef();
-    const emailRef = useRef();
 
     const [registerFn] = useRegisterMutation();
 
@@ -18,14 +16,19 @@ const Register = ({ setCurrentPage }) => {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        const result = await registerFn({ email: email, password: password, fullname: fullname });
-        if (result.error) {
-            console.error(result.error.data?.errors[0]?.message || "Unexpected error");
-            setErr(result.error.data?.errors[0]?.message || "Unexpected error");
-            return;
-        }
+        try {
 
-        setCurrentPage('login');
+            const result = await registerFn({ email: email, password: password, fullname: fullname });
+            if (result.error) {
+                console.error(result.error.data?.errors[0]?.message || "Unexpected error");
+                setErr(result.error.data?.errors[0]?.message || "Unexpected error");
+                return;
+            }
+
+            setCurrentPage('login');
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     const canSubmit = password && fullname && email;
@@ -52,7 +55,6 @@ const Register = ({ setCurrentPage }) => {
                 <br />
                 <label htmlFor="password">E-mail: </label>
                 <input
-                    ref={emailRef}
                     type="email"
                     id="email"
                     name="email"
@@ -64,7 +66,6 @@ const Register = ({ setCurrentPage }) => {
                 <br />
                 <label htmlFor="password">Jelszó: </label>
                 <input
-                    ref={passwordRef}
                     type="password"
                     id="password"
                     name="password"

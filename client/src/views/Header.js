@@ -2,13 +2,14 @@ import { useDispatch } from "react-redux";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { selectCurrentUser, setCredentials } from "../state/authSlice";
 import { useSelector } from 'react-redux';
+import { selectCurrentTaskList } from "../state/editSlice";
 
 export const Header = ({ setCurrentPage }) => {
     const dispatch = useDispatch();
     const user = useSelector(selectCurrentUser);
-
+    const selectedTaskList = useSelector(selectCurrentTaskList);
+    console.log(selectedTaskList);
     function logout() {
-
         try {
             dispatch(setCredentials({ user: null, token: null }));
         } catch (err) {
@@ -26,6 +27,9 @@ export const Header = ({ setCurrentPage }) => {
                         <Nav.Link onClick={() => setCurrentPage("taskBank")}>Feladatbank</Nav.Link>
                         {user && <>
                             <Nav.Link onClick={() => setCurrentPage("myTaskLists")}>Feladatsoraim</Nav.Link>
+                            {selectedTaskList &&
+                                <Nav.Link onClick={() => setCurrentPage("editTaskList")}>Szerkesztett feladatsor</Nav.Link>
+                            }
                             <Nav.Link onClick={() => setCurrentPage("profile")}>Profil</Nav.Link>
                         </>}
                     </Nav>

@@ -8,7 +8,6 @@ const Login = () => {
 
     const dispatch = useDispatch();
     const emailRef = useRef();
-    const passwordRef = useRef();
 
     const [loginFn] = useLoginMutation();
 
@@ -25,7 +24,6 @@ const Login = () => {
 
         try {
             const result = await loginFn({ strategy: 'local', email: email, password: password });
-            console.log("result", result);
             if (result.data) {
                 dispatch(setCredentials(result.data));
             }
@@ -65,7 +63,6 @@ const Login = () => {
                 <br />
                 <label htmlFor="password">Jelszó: </label>
                 <input
-                    ref={passwordRef}
                     type="password"
                     id="password"
                     name="password"
