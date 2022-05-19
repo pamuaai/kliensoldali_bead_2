@@ -8,7 +8,6 @@ const slice = createSlice({
             state,
             { payload: { user, accessToken } }
         ) => {
-            console.log(user, accessToken);
             state.user = user;
             state.token = accessToken;
         },

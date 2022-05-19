@@ -35,7 +35,6 @@ export const TaskListBank = ({ setCurrentPage }) => {
                 "status": "draft",
                 "tasks": []
             });
-            console.log("rezult", result);
             if (result.error) {
                 console.error(result.error.data?.errors[0]?.message || "Unexpected error");
                 return;

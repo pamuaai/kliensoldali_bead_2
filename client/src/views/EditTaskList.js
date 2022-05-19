@@ -10,11 +10,6 @@ export const EditTaskList = ({ setCurrentPage }) => {
     const [err, setErr] = useState(undefined);
     const selectedTaskList = useSelector(selectCurrentTaskList);
 
-    // if (!selectedTaskList) {
-    //     setCurrentPage("home")
-    //     return;
-    // }
-
     const [stateTaskList, setStateTaskList] = useState(selectedTaskList);
 
     const { title, status, description, tasks, createdAt, updatedAt } = stateTaskList;
@@ -50,7 +45,7 @@ export const EditTaskList = ({ setCurrentPage }) => {
             //     return;
             // }
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

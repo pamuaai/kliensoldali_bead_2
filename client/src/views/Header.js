@@ -8,12 +8,11 @@ export const Header = ({ setCurrentPage }) => {
     const dispatch = useDispatch();
     const user = useSelector(selectCurrentUser);
     const selectedTaskList = useSelector(selectCurrentTaskList);
-    console.log(selectedTaskList);
     function logout() {
         try {
             dispatch(setCredentials({ user: null, token: null }));
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

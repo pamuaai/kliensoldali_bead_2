@@ -26,7 +26,7 @@ export const Profile = ({ setCurrentPage }) => {
             dispatch(setCredentials({ user: null, token: null }));
             setCurrentPage('home');
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 
