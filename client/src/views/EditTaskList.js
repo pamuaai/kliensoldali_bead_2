@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Alert, Container, Button, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentTaskList, setCurrentTaskList } from "../state/editSlice";
+import { useModifyTaskListMutation } from "../state/taskListsApiSlice";
 import { Task } from "./components/Task";
 
 export const EditTaskList = ({ setCurrentPage }) => {
@@ -9,12 +10,16 @@ export const EditTaskList = ({ setCurrentPage }) => {
 
     const [err, setErr] = useState(undefined);
     const selectedTaskList = useSelector(selectCurrentTaskList);
+    const [modifyTaskListFn] = useModifyTaskListMutation();
+
 
     const [stateTaskList, setStateTaskList] = useState(selectedTaskList);
 
-    const { title, status, description, tasks, createdAt, updatedAt } = stateTaskList;
+    if (!stateTaskList) {
+        return "betöltés"
+    }
 
-
+    console.log("loaded tasklist", stateTaskList);
 
     function handleCancel() {
         dispatch(setCurrentTaskList({ taskList: null }));
@@ -26,32 +31,32 @@ export const EditTaskList = ({ setCurrentPage }) => {
     }
 
     function toggleStatus() {
-        setStateTaskList({ ...stateTaskList, status: status === "published" ? "draft" : "published" });
+        setStateTaskList({ ...stateTaskList, status: stateTaskList.status === "published" ? "draft" : "published" });
     }
 
     async function handleSubmit(event) {
         event.preventDefault();
 
         try {
-            console.log({ ...stateTaskList, });
-            // const result = await loginFn({ strategy: 'local', email: email, password: password });
-            // if (result.data) {
-            //     dispatch(setCredentials(result.data));
-            // }
+            const result = await modifyTaskListFn({ ...stateTaskList });
+            if (result.data) {
+                dispatch(setCurrentTaskList({ taskList: result.data }));
+                setStateTaskList(result.data);
+            }
 
-            // if (result.error) {
-            //     console.error(result.error.data?.errors[0]?.message || "Unexpected error");
-            //     setErr(result.error.data?.errors[0]?.message || "Unexpected error");
-            //     return;
-            // }
+            if (result.error) {
+                console.error(result.error.data?.errors[0]?.message || "Unexpected error");
+                setErr(result.error.data?.errors[0]?.message || "Unexpected error");
+                return;
+            }
         } catch (err) {
             console.error(err);
         }
     }
 
-    const canSubmit = title && status;
-    const createdAtDate = new Date(createdAt);
-    const updatedAtDate = new Date(updatedAt);
+    const canSubmit = stateTaskList.title && stateTaskList.status;
+    const createdAtDate = new Date(stateTaskList.createdAt);
+    const updatedAtDate = new Date(stateTaskList.updatedAt);
     return (
         <Container className="pt-3">
             <Form onSubmit={handleSubmit}>
@@ -67,15 +72,15 @@ export const EditTaskList = ({ setCurrentPage }) => {
                     type="text"
                     id="title"
                     name="title"
-                    value={title}
+                    value={stateTaskList.title}
                     onChange={handleChange}
                     required
                 />
                 <Form.Check
                     type="switch"
                     id="status"
-                    checked={status === "published"}
-                    onClick={() => toggleStatus()}
+                    checked={stateTaskList.status === "published"}
+                    onChange={() => toggleStatus()}
                     label="Publikálva"
                 />
                 <Form.Label>Leírás:</Form.Label>
@@ -83,15 +88,15 @@ export const EditTaskList = ({ setCurrentPage }) => {
                     type="text"
                     id="description"
                     name="description"
-                    value={description}
+                    value={stateTaskList.description}
                     onChange={handleChange}
                     required
                 />
                 <div>Létrehozás: {`${createdAtDate.getFullYear()}. ${createdAtDate.getMonth()}. ${createdAtDate.getDate()}`}</div>
                 <div>Módosítás: {`${updatedAtDate.getFullYear()}. ${updatedAtDate.getMonth()}. ${updatedAtDate.getDate()}`}</div>
-                Maximum összpontszám: {tasks.reduce((acc, t) => acc + t.points, 0)}
+                Maximum összpontszám: {stateTaskList?.tasks?.reduce((acc, t) => acc + t.points, 0)}
                 <div className="border rounded p-3">
-                    {tasks.map((task, taskId) => {
+                    {stateTaskList?.tasks?.map((task, taskId) => {
                         return <div key={taskId}>
                             <Task
                                 taskId={task.id}

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Alert, Container } from "react-bootstrap";
+import { Alert, Button, Container, Form } from "react-bootstrap";
 import { useLoginMutation } from "../../state/authApiSlice";
 import { setCredentials } from "../../state/authSlice";
 
@@ -47,10 +47,10 @@ const Login = () => {
     return (
         <Container className="p-3">
             <h1>Bejelentkezés</h1>
-            <form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit}>
                 {err && <Alert variant="danger">{err}</Alert>}
-                <label htmlFor="fullname">Email: </label>
-                <input
+                <Form.Label>Email: </Form.Label>
+                <Form.Control
                     ref={emailRef}
                     type="email"
                     id="email"
@@ -60,9 +60,8 @@ const Login = () => {
                     label="E-mail"
                     required
                 />
-                <br />
-                <label htmlFor="password">Jelszó: </label>
-                <input
+                <Form.Label>Jelszó: </Form.Label>
+                <Form.Control
                     type="password"
                     id="password"
                     name="password"
@@ -71,9 +70,9 @@ const Login = () => {
                     label="Jelszó"
                     required
                 />
-                <br />
-                <button type="submit" disabled={!canSubmit}> Elküld</button>
-            </form>
+
+                <Button variant="success" type="submit" className="mt-2" disabled={!canSubmit}>Bejelentkezés</Button>
+            </Form>
         </Container>
     );
 };

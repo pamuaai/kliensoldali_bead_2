@@ -15,9 +15,11 @@ const taskListsApiSlice = createApi({
             return headers;
         },
     }),
+    tagTypes: ["Tasklist"],
     endpoints: (build) => ({
         getAllTaskLists: build.query({
             query: () => ({ url: "tasklists?$limit=50" }),
+            providesTags: ["Tasklist"],
         }),
         getOneTaskList: build.query({
             query: (taskListId) => {
@@ -43,6 +45,7 @@ const taskListsApiSlice = createApi({
                     body
                 }
             },
+            invalidatesTags: ["Tasklist"],
         }),
     }),
 });

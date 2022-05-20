@@ -18,6 +18,7 @@ export const Task = ({ taskId, postFixNode = null }) => {
 
     return (
         <Container className="my-3">
+            <h4>{task.title}</h4>
             <div>
                 {task.description}
             </div>

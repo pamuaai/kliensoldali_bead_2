@@ -10,6 +10,7 @@ export const TaskListBank = ({ setCurrentPage }) => {
     const { data: taskLists, isLoading } = useGetAllTaskListsQuery();
     const [addNewTaskListFn] = useAddTaskListMutation();
 
+
     if (isLoading) {
         return "Betöltés alatt...";
     }
@@ -50,11 +51,11 @@ export const TaskListBank = ({ setCurrentPage }) => {
     }
 
     return (
-        <Container className="pt-3">
+        <Container className="py-3">
             <Row>
                 <h1 className="d-inline-block">Feladatsoraim</h1>
             </Row>
-            <Button variant="success" onClick={() => createNewTaskList()}>Új feladatsor</Button>
+            <Button variant="success" className="mb-2" onClick={() => createNewTaskList()}>Új feladatsor</Button>
             <Accordion>
                 {taskLists.data.map((taskList, id) => {
                     const createdAtDate = new Date(taskList.createdAt);
