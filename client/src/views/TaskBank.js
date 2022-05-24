@@ -1,16 +1,23 @@
 import { useGetSomeTasksQuery } from "../state/tasksApiSlice";
 import { Button, Alert, Container, Accordion, Row } from "react-bootstrap";
 import { useState } from "react";
-// import { setTasks } from "../state/tasksSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../state/authSlice";
 import { Task } from "./components/Task";
+import { useAddTaskListMutation, useGetAllTaskListsQuery, useModifyTaskListMutation } from "../state/taskListsApiSlice";
+import { selectCurrentTaskList, setCurrentTaskList } from "../state/editSlice";
 
 export const TaskBank = () => {
+    const dispatch = useDispatch();
     const [offset, setOffset] = useState(0);
     const limit = 10;
+    const [modifyTaskListFn] = useModifyTaskListMutation();
+    const [addTaskListFn] = useAddTaskListMutation();
     const user = useSelector(selectCurrentUser);
     const { data: currentTasks, isLoading } = useGetSomeTasksQuery(offset, limit);
+    const { refetch } = useGetAllTaskListsQuery();
+    const [stateTaskList, setStateTaskList] = useState(useSelector(selectCurrentTaskList));
+
     if (isLoading) {
         return "Betöltés alatt...";
     }
@@ -21,6 +28,80 @@ export const TaskBank = () => {
                 Nincsenek feladatok
             </Alert>
         </Container>;
+    }
+
+    async function addTaskToEditedList(taskToAdd) {
+        if (!stateTaskList) {
+            console.log('aaayupp');
+            addTaskToNewList(taskToAdd);
+            return;
+        }
+        const newTaskList = {
+            ...stateTaskList,
+            tasks: [
+                ...stateTaskList?.tasks,
+                {
+                    id: taskToAdd.id,
+                    notes: "",
+                    points: 0,
+                }
+            ]
+        };
+        console.log(newTaskList);
+        try {
+            const result = await modifyTaskListFn({ ...newTaskList });
+            if (result.data) {
+                dispatch(setCurrentTaskList({ taskList: result.data }));
+                setStateTaskList(result.data);
+                refetch();
+            }
+
+            if (result.error) {
+                console.error(result.error.data?.errors[0]?.message || "Unexpected error");
+                return;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function addTaskToNewList(taskToAdd) {
+        const newTaskList = {
+            userId: user.id,
+            title: "new tasklist",
+            description: "new description",
+            status: "draft",
+            tasks: [
+                {
+                    id: taskToAdd.id,
+                    notes: "",
+                    points: 0,
+                }
+            ]
+        };
+        try {
+            const result = await addTaskListFn({ ...newTaskList });
+            if (result.data) {
+                dispatch(setCurrentTaskList({ taskList: result.data }));
+                setStateTaskList(result.data);
+                refetch();
+            }
+
+            if (result.error) {
+                console.error(result.error.data?.errors[0]?.message || "Unexpected error");
+                return;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const taskIsSelected = (task) => {
+        if (stateTaskList) {
+            console.log(stateTaskList);
+            return stateTaskList.tasks.some((t) => t.id === task.id);
+        }
+        return false;
     }
 
     return (
@@ -42,8 +123,9 @@ export const TaskBank = () => {
                         </Accordion.Header>
                         <Accordion.Body>
                             <Task taskId={task.id} />
-                            {user &&
-                                <Button variant="success" onClick={() => { }}>Kiválaszt</Button>
+                            {user && (!taskIsSelected(task) ?
+                                <Button variant="success" onClick={() => addTaskToEditedList(task)}>Kiválaszt</Button> :
+                                <Button variant="success" disabled>Kiválasztva</Button>)
                             }
                         </Accordion.Body>
                     </Accordion.Item>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Alert, Container } from "react-bootstrap";
+import { Alert, Button, Container, Form } from "react-bootstrap";
 import { useRegisterMutation } from "../../state/authApiSlice";
 
 const Register = ({ setCurrentPage }) => {
@@ -39,10 +39,12 @@ const Register = ({ setCurrentPage }) => {
 
     return (
         <Container className="p-3">
-            <form onSubmit={handleSubmit}>
+            <h1>Regisztráció</h1>
+
+            <Form onSubmit={handleSubmit}>
                 {err && <Alert variant="danger">{err}</Alert>}
-                <label htmlFor="fullname">Teljes név: </label>
-                <input
+                <Form.Label>Teljes név: </Form.Label>
+                <Form.Control
                     ref={fullNameRef}
                     type="text"
                     id="fullname"
@@ -52,9 +54,8 @@ const Register = ({ setCurrentPage }) => {
                     label="Teljes név"
                     required
                 />
-                <br />
-                <label htmlFor="password">E-mail: </label>
-                <input
+                <Form.Label>Email: </Form.Label>
+                <Form.Control
                     type="email"
                     id="email"
                     name="email"
@@ -63,9 +64,8 @@ const Register = ({ setCurrentPage }) => {
                     label="E-mail"
                     required
                 />
-                <br />
-                <label htmlFor="password">Jelszó: </label>
-                <input
+                <Form.Label>Jelszó: </Form.Label>
+                <Form.Control
                     type="password"
                     id="password"
                     name="password"
@@ -74,9 +74,8 @@ const Register = ({ setCurrentPage }) => {
                     label="Jelszó"
                     required
                 />
-                <br />
-                <button type="submit" disabled={!canSubmit}> Elküld</button>
-            </form>
+                <Button variant="success" type="submit" className="mt-2" disabled={!canSubmit}>Elküld</Button>
+            </Form>
         </Container>
     );
 };

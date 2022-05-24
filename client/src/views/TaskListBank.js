@@ -10,7 +10,6 @@ export const TaskListBank = ({ setCurrentPage }) => {
     const { data: taskLists, isLoading } = useGetAllTaskListsQuery();
     const [addNewTaskListFn] = useAddTaskListMutation();
 
-
     if (isLoading) {
         return "Betöltés alatt...";
     }
@@ -21,6 +20,8 @@ export const TaskListBank = ({ setCurrentPage }) => {
             </Alert>
         </Container>;
     }
+
+
 
     function handleSelect(tl) {
         dispatch(setCurrentTaskList({ taskList: tl }));

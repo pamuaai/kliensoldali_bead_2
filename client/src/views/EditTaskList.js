@@ -2,18 +2,18 @@ import { useState } from "react";
 import { Alert, Container, Button, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentTaskList, setCurrentTaskList } from "../state/editSlice";
-import { useModifyTaskListMutation } from "../state/taskListsApiSlice";
+import { useAddTaskListMutation, useGetAllTaskListsQuery, useModifyTaskListMutation } from "../state/taskListsApiSlice";
 import { Task } from "./components/Task";
 
 export const EditTaskList = ({ setCurrentPage }) => {
     const dispatch = useDispatch();
 
     const [err, setErr] = useState(undefined);
-    const selectedTaskList = useSelector(selectCurrentTaskList);
     const [modifyTaskListFn] = useModifyTaskListMutation();
+    const { refetch } = useGetAllTaskListsQuery();
+    const [stateTaskList, setStateTaskList] = useState(useSelector(selectCurrentTaskList));
 
 
-    const [stateTaskList, setStateTaskList] = useState(selectedTaskList);
 
     if (!stateTaskList) {
         return "betöltés"
@@ -42,6 +42,7 @@ export const EditTaskList = ({ setCurrentPage }) => {
             if (result.data) {
                 dispatch(setCurrentTaskList({ taskList: result.data }));
                 setStateTaskList(result.data);
+                refetch();
             }
 
             if (result.error) {
