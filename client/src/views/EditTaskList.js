@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Alert, Container, Button, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentTaskList, setCurrentTaskList } from "../state/editSlice";
-import { useAddTaskListMutation, useGetAllTaskListsQuery, useModifyTaskListMutation } from "../state/taskListsApiSlice";
+import { useGetAllTaskListsQuery, useModifyTaskListMutation } from "../state/taskListsApiSlice";
 import { Task } from "./components/Task";
 
 export const EditTaskList = ({ setCurrentPage }) => {

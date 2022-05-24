@@ -30,13 +30,24 @@ export const TaskBank = () => {
         </Container>;
     }
 
-    async function addTaskToEditedList(taskToAdd) {
+    const constructModifiedTaskList = (taskToAdd) => {
         if (!stateTaskList) {
-            console.log('aaayupp');
-            addTaskToNewList(taskToAdd);
-            return;
+            return {
+                userId: user.id,
+                title: "new tasklist",
+                description: "new description",
+                status: "draft",
+                tasks: [
+                    {
+                        id: taskToAdd.id,
+                        notes: "",
+                        points: 0,
+                    }
+                ]
+            };
         }
-        const newTaskList = {
+
+        return {
             ...stateTaskList,
             tasks: [
                 ...stateTaskList?.tasks,
@@ -47,40 +58,14 @@ export const TaskBank = () => {
                 }
             ]
         };
+    };
+
+    async function addTaskToEditedList(taskToAdd) {
+        const newTaskList = constructModifiedTaskList(taskToAdd);
         console.log(newTaskList);
         try {
-            const result = await modifyTaskListFn({ ...newTaskList });
-            if (result.data) {
-                dispatch(setCurrentTaskList({ taskList: result.data }));
-                setStateTaskList(result.data);
-                refetch();
-            }
 
-            if (result.error) {
-                console.error(result.error.data?.errors[0]?.message || "Unexpected error");
-                return;
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function addTaskToNewList(taskToAdd) {
-        const newTaskList = {
-            userId: user.id,
-            title: "new tasklist",
-            description: "new description",
-            status: "draft",
-            tasks: [
-                {
-                    id: taskToAdd.id,
-                    notes: "",
-                    points: 0,
-                }
-            ]
-        };
-        try {
-            const result = await addTaskListFn({ ...newTaskList });
+            const result = stateTaskList ? await modifyTaskListFn({ ...newTaskList }) : await addTaskListFn({ ...newTaskList });
             if (result.data) {
                 dispatch(setCurrentTaskList({ taskList: result.data }));
                 setStateTaskList(result.data);
