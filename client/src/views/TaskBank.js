@@ -8,15 +8,15 @@ import { useAddTaskListMutation, useGetAllTaskListsQuery, useModifyTaskListMutat
 import { selectCurrentTaskList, setCurrentTaskList } from "../state/editSlice";
 
 export const TaskBank = () => {
+    const limit = 10;
     const dispatch = useDispatch();
     const [offset, setOffset] = useState(0);
-    const limit = 10;
     const [modifyTaskListFn] = useModifyTaskListMutation();
     const [addTaskListFn] = useAddTaskListMutation();
+    const [stateTaskList, setStateTaskList] = useState(useSelector(selectCurrentTaskList));
     const user = useSelector(selectCurrentUser);
     const { data: currentTasks, isLoading } = useGetSomeTasksQuery(offset, limit);
     const { refetch } = useGetAllTaskListsQuery();
-    const [stateTaskList, setStateTaskList] = useState(useSelector(selectCurrentTaskList));
 
     if (isLoading) {
         return "Betöltés alatt...";
@@ -62,10 +62,9 @@ export const TaskBank = () => {
 
     async function addTaskToEditedList(taskToAdd) {
         const newTaskList = constructModifiedTaskList(taskToAdd);
-        console.log(newTaskList);
         try {
 
-            const result = stateTaskList ? await modifyTaskListFn({ ...newTaskList }) : await addTaskListFn({ ...newTaskList });
+            const result = stateTaskList ? await modifyTaskListFn(newTaskList) : await addTaskListFn(newTaskList);
             if (result.data) {
                 dispatch(setCurrentTaskList({ taskList: result.data }));
                 setStateTaskList(result.data);
@@ -83,7 +82,6 @@ export const TaskBank = () => {
 
     const taskIsSelected = (task) => {
         if (stateTaskList) {
-            console.log(stateTaskList);
             return stateTaskList.tasks.some((t) => t.id === task.id);
         }
         return false;
@@ -107,11 +105,11 @@ export const TaskBank = () => {
                             </div>
                         </Accordion.Header>
                         <Accordion.Body>
-                            <Task taskId={task.id} />
-                            {user && (!taskIsSelected(task) ?
-                                <Button variant="success" onClick={() => addTaskToEditedList(task)}>Kiválaszt</Button> :
-                                <Button variant="success" disabled>Kiválasztva</Button>)
-                            }
+                            <Task taskId={task.id} postFixNode={user &&
+                                (!taskIsSelected(task) ?
+                                    <Button variant="success" onClick={() => addTaskToEditedList(task)}>Kiválaszt</Button> :
+                                    <Button variant="info" disabled>Kiválasztva</Button>)
+                            } />
                         </Accordion.Body>
                     </Accordion.Item>
                 })}

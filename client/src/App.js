@@ -9,6 +9,7 @@ import { TaskBank } from './views/TaskBank';
 import { Profile } from './views/Profile';
 import { TaskListBank } from './views/TaskListBank';
 import { EditTaskList } from './views/EditTaskList';
+import { Home } from './views/Home';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -17,24 +18,21 @@ function App() {
   const renderPage = (pageName) => {
     switch (pageName) {
       case 'home':
-        return <div>home</div>
+        return <Home setCurrentPage={setCurrentPage} />;
       case 'taskBank':
         return <TaskBank />
       case 'myTaskLists':
-        return <TaskListBank setCurrentPage={setCurrentPage} />
+        return user ? <TaskListBank setCurrentPage={setCurrentPage} /> : <Login setCurrentPage={setCurrentPage} />;
       case 'profile':
-        return <Profile setCurrentPage={setCurrentPage} />
+        return user ? <Profile setCurrentPage={setCurrentPage} /> : <Login setCurrentPage={setCurrentPage} />;
       case 'editTaskList':
-        return <EditTaskList setCurrentPage={setCurrentPage} />
+        return user ? <EditTaskList setCurrentPage={setCurrentPage} /> : <Login setCurrentPage={setCurrentPage} />;
       case 'login':
-        if (!user) {
-          return <Login setCurrentPage={setCurrentPage} />
-        }
-        return <div>home</div>
+        return user ? <Home setCurrentPage={setCurrentPage} /> : <Login setCurrentPage={setCurrentPage} />;
       case 'register':
-        return <Register setCurrentPage={setCurrentPage} />
+        return user ? <Home setCurrentPage={setCurrentPage} /> : <Register setCurrentPage={setCurrentPage} />;
       default:
-        return <div>default</div>
+        return <Home setCurrentPage={setCurrentPage} />;
     }
   }
 

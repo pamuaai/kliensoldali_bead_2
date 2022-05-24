@@ -17,12 +17,12 @@ export const Task = ({ taskId, postFixNode = null }) => {
     }
 
     return (
-        <Container className="my-3">
+        <Container className="p-3 my-3 border rounded bg-light">
             <h4>{task.title}</h4>
             <div>
                 {task.description}
             </div>
-            {postFixNode}
+            {postFixNode && <><hr /> {postFixNode}</>}
         </Container>
     );
 }

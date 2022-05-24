@@ -4,15 +4,14 @@ import { useRegisterMutation } from "../../state/authApiSlice";
 
 const Register = ({ setCurrentPage }) => {
     const fullNameRef = useRef();
-
     const [registerFn] = useRegisterMutation();
-
     const [values, setValues] = useState({ fullname: '', password: '', email: '' });
     const [err, setErr] = useState(undefined);
+    const { fullname, password, email } = values;
+
     const handleChange = (event) =>
         setValues({ ...values, [event.target.name]: event.target.value });
 
-    const { fullname, password, email } = values;
 
     async function handleSubmit(event) {
         event.preventDefault();

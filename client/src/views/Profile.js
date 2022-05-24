@@ -1,6 +1,7 @@
 import { Alert, Container, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser, setCredentials } from "../state/authSlice";
+import { setCurrentTaskList } from "../state/editSlice";
 import { useGetAllTaskListsQuery } from "../state/taskListsApiSlice";
 
 export const Profile = ({ setCurrentPage }) => {
@@ -24,6 +25,7 @@ export const Profile = ({ setCurrentPage }) => {
     function logout() {
         try {
             dispatch(setCredentials({ user: null, token: null }));
+            dispatch(setCurrentTaskList({ taskList: null }));
             setCurrentPage('home');
         } catch (err) {
             console.error(err);

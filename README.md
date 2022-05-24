@@ -4,11 +4,9 @@ _Kliensoldali webprogramozás 2. beadandó:_
 
 ## Nyilatkozat
 
-Kérlek, töltsétek ki az adataitokkal beadás előtt!
-
 ```txt
-<Hallgató neve>
-<Neptun kódja>
+Paines Márk
+I4OCN1
 Kliensoldali webprogramozás - beadandó
 Ezt a megoldást a fent írt hallgató küldte be és készítette a Kliensoldali webprogramozás kurzus számonkéréséhez.
 Kijelentem, hogy ez a megoldás a saját munkám. Nem másoltam vagy használtam harmadik féltől

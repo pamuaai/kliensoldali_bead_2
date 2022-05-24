@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { selectCurrentUser, setCredentials } from "../state/authSlice";
 import { useSelector } from 'react-redux';
-import { selectCurrentTaskList } from "../state/editSlice";
+import { selectCurrentTaskList, setCurrentTaskList } from "../state/editSlice";
 
 export const Header = ({ setCurrentPage }) => {
     const dispatch = useDispatch();
@@ -11,6 +11,8 @@ export const Header = ({ setCurrentPage }) => {
     function logout() {
         try {
             dispatch(setCredentials({ user: null, token: null }));
+            dispatch(setCurrentTaskList({ taskList: null }));
+            setCurrentPage('home');
         } catch (err) {
             console.error(err);
         }

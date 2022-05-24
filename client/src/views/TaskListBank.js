@@ -7,8 +7,8 @@ import { selectCurrentTaskList, setCurrentTaskList } from "../state/editSlice";
 export const TaskListBank = ({ setCurrentPage }) => {
     const dispatch = useDispatch();
     const selectedTaskList = useSelector(selectCurrentTaskList);
-    const { data: taskLists, isLoading } = useGetAllTaskListsQuery();
     const [addNewTaskListFn] = useAddTaskListMutation();
+    const { data: taskLists, isLoading } = useGetAllTaskListsQuery();
 
     if (isLoading) {
         return "Betöltés alatt...";
